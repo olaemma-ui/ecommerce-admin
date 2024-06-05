@@ -8,7 +8,7 @@
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
-    <title>Remos eCommerce Admin Dashboard HTML Template</title>
+    <title>Blvck Admin eCommerce Admin Dashboard HTML Template</title>
 
     <meta name="author" content="themesflat.com">
 
@@ -881,7 +881,7 @@
                         <!-- /main-content-wrap -->
                         <!-- bottom-page -->
                         <div class="bottom-page">
-                            <div class="body-text">Copyright © 2024 Remos. Design with</div>
+                            <div class="body-text">Copyright © 2024 OLA EMMA. Design with</div>
                             <i class="icon-heart"></i>
                             <div class="body-text">by <a href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights reserved.</div>
                         </div>

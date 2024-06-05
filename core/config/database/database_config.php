@@ -33,6 +33,8 @@ class Database
         }
     }
 
+    
+
     public function closeConnection(){
         $this->mysqli->close();
     }

@@ -17,16 +17,32 @@ class AuthenticationService extends AuthenticationRepository
     public function authenticate($email, $password)
     {
         $error = [];
+        $result =  null;
         $email = DataValidator::sanitizeInput($email);
         $password = DataValidator::sanitizeInput($password);
 
-        if (empty($value) || empty($email)) {
-            $error['email'] = empty($value) ? 'This field is required' : null;
-            $error['password'] = empty($value) ? 'This field is required' : null;
+        if (empty($password) || empty($email)) {
+            $error['email'] = empty($email) ? 'This field is required' : null;
+        } else {
+            $error['email'] = DataValidator::validateEmail($email) ? null : 'Enter a valid Email';
+            $error['password'] = DataValidator::validatePasswordStrength($password) ? null : 'Password must contain 1 upper, lower case letters, special charcter and number';
         }
 
-        $result =  $this->authenticateUser($email, $password, $this->table);
-        if ($result == 1) {
+        $psw = sha1($password);
+
+        if (empty($error['email']) && empty($error['password'])) {
+            return $result =  $this->authenticateUser($email, $psw, $this->table);
+        } else {
+            return [
+                'token' => null,
+                'message' => 'Form validation error',
+                'success' => false,
+                'data' => null,
+                'error' => $error,
+            ];
+        }
+
+        if ($result === 1) {
             return [
                 'token' => null,
                 'message' => 'Invalid credentials',
@@ -35,10 +51,10 @@ class AuthenticationService extends AuthenticationRepository
                 'error' => $error,
             ];
         }
-        if ($result == 0) {
+        if ($result === 0) {
             return [
                 'token' => null,
-                'message' => 'Account does not exit!',
+                'message' => "Account does not exit!",
                 'success' => false,
                 'data' => null,
             ];

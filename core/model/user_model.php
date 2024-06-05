@@ -5,6 +5,7 @@
 class UserModel
 {
 
+    private $userId;
     private $fullName;
     private $email;
     private $phone;
@@ -18,8 +19,9 @@ class UserModel
      */
     private RoleModel $role;
 
-    public function __construct($fullName = null, $email = null, $phone = null, $password = null, $role = new RoleModel(), $token = null, $createdAt)
+    public function __construct($userId = null, $fullName = null, $email = null, $phone = null, $password = null, $role = new RoleModel(), $token = null, $createdAt)
     {
+        $this->userId = $userId;
         $this->fullName = $fullName;
         $this->email = $email;
         $this->phone = $phone;
@@ -41,6 +43,10 @@ class UserModel
     //     );
     // }
 
+    public function getUserId()
+    {
+        return $this->userId;
+    }
     public function getFullName()
     {
         return $this->fullName;
@@ -70,13 +76,15 @@ class UserModel
     {
         return $this->token;
     }
-    public function getCreatedAt(){
+    public function getCreatedAt()
+    {
         return $this->createdAt;
     }
 
     public function toArray()
     {
         return [
+            "userId" => $this->userId,
             "fullName" => $this->fullName,
             "email" => $this->email,
             "phone" => $this->phone,

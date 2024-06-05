@@ -39,11 +39,30 @@ class DataValidator
             return false;
         }
     }
+    // Validate number
+    public static function validatePrice($price)
+    {
+        // Remove non-numeric characters
+        $price = preg_match('/^(\d{1,3}(,\d{3})*|\d+)(\.\d+)?$/', $price);
+        // Check if the result is numeric
+        if ($price) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     // Sanitize input (remove HTML tags, strip whitespace)
     public static function sanitizeInput($input)
     {
         return trim(strip_tags($input));
+    }
+
+    public static function sanitizeText($input)
+    {
+        // Define an array of allowed HTML tags
+        $allowedTags = '<b><i><u><a><p><br><ul><ol><li><strong><em><h1><h2><h3><h4><h5><h6><div><span><img><table><tr><td><th><blockquote><code><pre><iframe><video><audio><hr>';
+        return trim(strip_tags($input, $allowedTags));
     }
 
     // Validate URL

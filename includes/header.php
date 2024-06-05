@@ -1,5 +1,5 @@
 <?php 
-    require("./session_handler/session_handler.php");
+    require "./session_handler/session_handler.php";
 ?>
 
 <!DOCTYPE html>
@@ -12,7 +12,7 @@
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
-    <title>Remos eCommerce Admin Dashboard HTML Template</title>
+    <title>Blvck Admin eCommerce Admin Dashboard HTML Template</title>
 
     <meta name="author" content="themesflat.com">
 
@@ -25,6 +25,7 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/product-details-style.css">
 
 
 

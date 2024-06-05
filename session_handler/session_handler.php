@@ -1,5 +1,5 @@
 <?php
-    require_once "session_keys.php";
+require_once "session_keys.php";
 class SessionManager
 {
 
@@ -14,6 +14,13 @@ class SessionManager
     public function setSessionVariable($key, $value)
     {
         $_SESSION[$key] = $value;
+    }
+
+    public function authenticate()
+    {
+        if (!$this->getSessionVariable(SessionKeys::USER_ID)) {
+            header('location:./login.php');
+        }
     }
 
     public function getSessionVariable($key)

@@ -1,997 +1,897 @@
-<!DOCTYPE html>
-<!--[if IE 8 ]><html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!-->
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
-<!--<![endif]-->
+<?php
+require 'includes/sidebar.php';
+require './core/services/brand_service.php';
+require './core/services/categor_service.php';
+require './core/services/product_service.php';
+require_once($_SERVER['DOCUMENT_ROOT'] . '/ecommerce-admin/core/config/required/global_imports.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/ecommerce-admin/core/utils/utilis.php');
 
-<head>
-    <!-- Basic Page Needs -->
-    <meta charset="utf-8">
-    <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
-    <title>Remos eCommerce Admin Dashboard HTML Template</title>
-
-    <meta name="author" content="themesflat.com">
-
-    <!-- Mobile Specific Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-    <!-- Theme Style -->
-    <link rel="stylesheet" type="text/css" href="css/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="css/animation.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+$product_name = isset($_GET['product_name']) ? $_GET['product_name'] : '';
+$quantity = isset($_GET['quantity']) ? $_GET['quantity'] : '';
+$price = isset($_GET['price']) ? $_GET['price'] : '';
+$description = isset($_GET['description']) ? $_GET['pricedescription'] : '';
 
 
+$brandService = new BrandService();
+$brands = $brandService->fetchAllBrands();
 
-    <!-- Font -->
-    <link rel="stylesheet" href="font/fonts.css">
+$categoryService = new CartegoryService();
+$category = $categoryService->fetchAllCategory();
 
-    <!-- Icon -->
-    <link rel="stylesheet" href="icon/style.css">
+$productService = new ProductService();
+$response = [];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add-product'])) {
+    $available_size = arrayToString($_POST['size']);
+    $available_color = arrayToString($_POST['colors']);
+    // print_r($_FILES['product_images']);
+    $response = $productService->addProduct(
+        new ProductModel(
+            product_images: '',
+            product_name: $_POST['product_name'],
+            price: $_POST['price'],
+            available_size: $available_size,
+            brand_id: $_POST['brand'],
+            category_id: $_POST['category'],
+            gender: $_POST['gender'],
+            quantity: $_POST['quantity'],
+            description: $_POST['description'],
+            sold: 0,
+            available_color: $available_color
+        ),
+        product_images: $_FILES['product_images']
+    );
 
-    <!-- Favicon and Touch Icons  -->
-    <link rel="shortcut icon" href="images/favicon.png">
-    <link rel="apple-touch-icon-precomposed" href="images/favicon.png">
+    if ($response['success']) $_POST = array();
 
-</head>
+    print_r($response);
+}
 
-<body class="body">
-
-    <!-- #wrapper -->
-    <div id="wrapper">
-        <!-- #page -->
-        <div id="page" class="">
-            <!-- layout-wrap -->
-           <div class="layout-wrap">
-                <!-- preload -->
-                <div id="preload" class="preload-container">
-                    <div class="preloading">
-                        <span></span>
-                    </div>
+?>
+<!-- /section-menu-left -->
+<!-- section-content-right -->
+<div class="section-content-right">
+    <!-- header-dashboard -->
+    <div class="header-dashboard">
+        <div class="wrap">
+            <div class="header-left">
+                <a href="index.php">
+                    <img class="" id="logo_header_mobile" alt="" src="images/logo/logo.png" data-light="images/logo/logo.png" data-dark="images/logo/logo-dark.png" data-width="154px" data-height="52px" data-retina="images/logo/logo@2x.png">
+                </a>
+                <div class="button-show-hide">
+                    <i class="icon-menu-left"></i>
                 </div>
-                <!-- /preload -->
-                <!-- section-menu-left -->
-                <div class="section-menu-left">
-                    <div class="box-logo">
-                        <a href="index.php" id="site-logo-inner">
-                            <img class="" id="logo_header" alt="" src="images/logo/logo.png" data-light="images/logo/logo.png" data-dark="images/logo/logo-dark.png" >
-                        </a>
-                        <div class="button-show-hide">
-                            <i class="icon-menu-left"></i>
-                        </div>
+                <form class="form-search flex-grow">
+                    <fieldset class="name">
+                        <input type="text" placeholder="Search here..." class="show-search" name="name" tabindex="2" value="" aria-required="true" required="">
+                    </fieldset>
+                    <div class="button-submit">
+                        <button class="" type="submit"><i class="icon-search"></i></button>
                     </div>
-                    <div class="center">
-                        <div class="center-item">
-                            <div class="center-heading">Main Home</div>
-                            <ul class="menu-list">
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-grid"></i></div>
-                                        <div class="text">Dashboard</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="index.php" class="">
-                                                <div class="text">Home 01</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="home-2.php" class="">
-                                                <div class="text">Home 02</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="home-3.php" class="">
-                                                <div class="text">Home 03</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="home-4.php" class="">
-                                                <div class="text">Home 04</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="home-boxed.php" class="">
-                                                <div class="text">Home Boxed</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="home-menu-icon-hover.php" class="">
-                                                <div class="text">Home Menu Icon Hover</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="home-menu-icon-default.php" class="">
-                                                <div class="text">Home Menu Icon Default</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="center-item">
-                            <div class="center-heading">All page</div>
-                            <ul class="menu-list">
-                                <li class="menu-item has-children active">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-shopping-cart"></i></div>
-                                        <div class="text">Ecommerce</div>
-                                    </a>
-                                    <ul class="sub-menu" style="display: block;">
-                                        <li class="sub-menu-item">
-                                            <a href="add-product.php" class="active">
-                                                <div class="text">Add Product</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="product-list.php" class="">
-                                                <div class="text">Product List</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-layers"></i></div>
-                                        <div class="text">Category</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="category-list.php" class="">
-                                                <div class="text">Category list</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="new-category.php" class="">
-                                                <div class="text">New category</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-box"></i></div>
-                                        <div class="text">Attributes</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="attributes.php" class="">
-                                                <div class="text">Attributes</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="add-attributes.php" class="">
-                                                <div class="text">Add attributes</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-file-plus"></i></div>
-                                        <div class="text">Order</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="oder-list.php" class="">
-                                                <div class="text">Order list</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="oder-detail.php" class="">
-                                                <div class="text">Order detail</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="oder-tracking.php" class="">
-                                                <div class="text">Order tracking</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-user"></i></div>
-                                        <div class="text">User</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="all-user.php" class="">
-                                                <div class="text">All user</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="add-new-user.php" class="">
-                                                <div class="text">Add new user</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="login.php" class="">
-                                                <div class="text">Login</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="sign-up.php" class="">
-                                                <div class="text">Sign up</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-user-plus"></i></div>
-                                        <div class="text">Roles</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="all-roles.php" class="">
-                                                <div class="text">All roles</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="create-role.php" class="">
-                                                <div class="text">Create role</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item">
-                                    <a href="gallery.php" class="">
-                                        <div class="icon"><i class="icon-image"></i></div>
-                                        <div class="text">Gallery</div>
-                                    </a>
-                                </li>
-                                <li class="menu-item">
-                                    <a href="report.php" class="">
-                                        <div class="icon"><i class="icon-pie-chart"></i></div>
-                                        <div class="text">Report</div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="center-item">
-                            <div class="center-heading">Setting</div>
-                            <ul class="menu-list">
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-map-pin"></i></div>
-                                        <div class="text">Location</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="countries.php" class="">
-                                                <div class="text">Countries</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="states.php" class="">
-                                                <div class="text">States</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="cities.php" class="">
-                                                <div class="text">Cities</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="menu-item">
-                                    <a href="setting.php" class="">
-                                        <div class="icon"><i class="icon-settings"></i></div>
-                                        <div class="text">Setting</div>
-                                    </a>
-                                </li>
-                                <li class="menu-item has-children">
-                                    <a href="javascript:void(0);" class="menu-item-button">
-                                        <div class="icon"><i class="icon-edit"></i></div>
-                                        <div class="text">Pages</div>
-                                    </a>
-                                    <ul class="sub-menu">
-                                        <li class="sub-menu-item">
-                                            <a href="list-page.php" class="">
-                                                <div class="text">List page</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="new-page.php" class="">
-                                                <div class="text">New page</div>
-                                            </a>
-                                        </li>
-                                        <li class="sub-menu-item">
-                                            <a href="edit-page.php" class="">
-                                                <div class="text">Edit page</div>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                      <div class="center-item">
-                            <div class="center-heading">Components</div>
-                            <ul class="menu-list">
-                                <li class="menu-item">
-                                    <a href="components.php" class="">
-                                        <div class="icon"><i class="icon-database"></i></div>
-                                        <div class="text">Components</div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="center-item">
-                            <div class="center-heading">Support</div>
-                            <ul class="menu-list">
-                                <li class="menu-item">
-                                    <a href="#" class="">
-                                        <div class="icon"><i class="icon-help-circle"></i></div>
-                                        <div class="text">Help center</div>
-                                    </a>
-                                </li>
-                                <li class="menu-item">
-                                    <a href="#" class="">
-                                        <div class="icon">
-                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M15.7727 4.27031C15.025 3.51514 14.1357 2.91486 13.1558 2.50383C12.1758 2.09281 11.1244 1.87912 10.0617 1.875H10C7.84512 1.875 5.77849 2.73102 4.25476 4.25476C2.73102 5.77849 1.875 7.84512 1.875 10V14.375C1.875 14.8723 2.07254 15.3492 2.42417 15.7008C2.77581 16.0525 3.25272 16.25 3.75 16.25H5C5.49728 16.25 5.9742 16.0525 6.32583 15.7008C6.67746 15.3492 6.875 14.8723 6.875 14.375V11.25C6.875 10.7527 6.67746 10.2758 6.32583 9.92417C5.9742 9.57254 5.49728 9.375 5 9.375H3.15313C3.27366 8.07182 3.76315 6.83 4.56424 5.79508C5.36532 4.76016 6.44481 3.97502 7.67617 3.53169C8.90753 3.08836 10.2398 3.0052 11.5167 3.29196C12.7936 3.57872 13.9624 4.22352 14.8859 5.15078C16.0148 6.28539 16.7091 7.78052 16.8477 9.375H15C14.5027 9.375 14.0258 9.57254 13.6742 9.92417C13.3225 10.2758 13.125 10.7527 13.125 11.25V14.375C13.125 14.8723 13.3225 15.3492 13.6742 15.7008C14.0258 16.0525 14.5027 16.25 15 16.25H16.875C16.875 16.7473 16.6775 17.2242 16.3258 17.5758C15.9742 17.9275 15.4973 18.125 15 18.125H10.625C10.4592 18.125 10.3003 18.1908 10.1831 18.3081C10.0658 18.4253 10 18.5842 10 18.75C10 18.9158 10.0658 19.0747 10.1831 19.1919C10.3003 19.3092 10.4592 19.375 10.625 19.375H15C15.8288 19.375 16.6237 19.0458 17.2097 18.4597C17.7958 17.8737 18.125 17.0788 18.125 16.25V10C18.1291 8.93717 17.9234 7.88398 17.5197 6.90077C17.1161 5.91757 16.5224 5.02368 15.7727 4.27031ZM5 10.625C5.16576 10.625 5.32473 10.6908 5.44194 10.8081C5.55915 10.9253 5.625 11.0842 5.625 11.25V14.375C5.625 14.5408 5.55915 14.6997 5.44194 14.8169C5.32473 14.9342 5.16576 15 5 15H3.75C3.58424 15 3.42527 14.9342 3.30806 14.8169C3.19085 14.6997 3.125 14.5408 3.125 14.375V10.625H5ZM15 15C14.8342 15 14.6753 14.9342 14.5581 14.8169C14.4408 14.6997 14.375 14.5408 14.375 14.375V11.25C14.375 11.0842 14.4408 10.9253 14.5581 10.8081C14.6753 10.6908 14.8342 10.625 15 10.625H16.875V15H15Z" fill="#111111"/>
-                                            </svg>
+                    <div class="box-content-search" id="box-content-search">
+                        <ul class="mb-24">
+                            <li class="mb-14">
+                                <div class="body-title">Top selling product</div>
+                            </li>
+                            <li class="mb-14">
+                                <div class="divider"></div>
+                            </li>
+                            <li>
+                                <ul>
+                                    <li class="product-item gap14 mb-10">
+                                        <div class="image no-bg">
+                                            <img src="images/products/17.png" alt="">
                                         </div>
-                                        <div class="text">FAQs</div>
-                                    </a>
-                                </li>
-                                <li class="menu-item">
-                                    <a href="#" class="">
-                                        <div class="icon">
-                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <g clip-path="url(#clip0_604_18468)">
-                                                <path d="M4.71875 7V1H15.5561L18.9991 4.44801V19H4.71875C4.71875 19 4.71875 16.2 4.71875 13.5" stroke="#111111" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M19.0015 4.44801H15.5586V1L19.0015 4.44801Z" stroke="#111111" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M7.53469 14.5507C9.89243 14.5507 11.8037 12.6366 11.8037 10.2754C11.8037 7.91415 9.89243 6 7.53469 6C5.17695 6 3.26562 7.91415 3.26562 10.2754C3.26562 12.6366 5.17695 14.5507 7.53469 14.5507Z" stroke="#111111" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M5.41029 13.9852L2.90967 16.4895C2.47263 16.9272 1.76451 16.9272 1.3275 16.4895C0.890833 16.0522 0.890833 15.3427 1.3275 14.9054L3.82812 12.4011M6.14799 10.2051L7.11794 11.175L8.91794 9.375" stroke="#111111" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                                                </g>
-                                                <defs>
-                                                <clipPath id="clip0_604_18468">
-                                                <rect width="20" height="20" fill="white"/>
-                                                </clipPath>
-                                                </defs>
-                                            </svg>
-                                        </div>
-                                        <div class="text">Privacy policy</div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="center-item">
-                            <div class="center-heading">Connect us</div>
-                            <ul class="wg-social">
-                                <li>
-                                    <a href="#"><i class="icon-facebook"></i></a>
-                                </li>
-                                <li class="active">
-                                    <a href="#"><i class="icon-twitter"></i></a>
-                                </li>
-                                <li>
-                                    <a href="#"><i class="icon-linkedin"></i></a>
-                                </li>
-                                <li>
-                                    <a href="#"><i class="icon-instagram"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="bot text-center">
-                        <div class="wrap">
-                            <div class="mb-20">
-                                <img src="images/menu-left/img-bot.png" alt="">
-                            </div>
-                            <div class="mb-20">
-                                <h6>Hi, how can we help?</h6>
-                                <div class="text">Contact us if you have any assistance, we will contact you as soon as possible</div>
-                            </div>
-                            <a href="#" class="tf-button w-full">Contact</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- /section-menu-left -->
-                <!-- section-content-right -->
-                <div class="section-content-right">
-                    <!-- header-dashboard -->
-                    <div class="header-dashboard">
-                        <div class="wrap">
-                            <div class="header-left">
-                                <a href="index.php">
-                                    <img class="" id="logo_header_mobile" alt="" src="images/logo/logo.png" data-light="images/logo/logo.png" data-dark="images/logo/logo-dark.png" data-width="154px" data-height="52px" data-retina="images/logo/logo@2x.png">
-                                </a>
-                                <div class="button-show-hide">
-                                    <i class="icon-menu-left"></i>
-                                </div>
-                                <form class="form-search flex-grow">
-                                    <fieldset class="name">
-                                        <input type="text" placeholder="Search here..." class="show-search" name="name" tabindex="2" value="" aria-required="true" required="">
-                                    </fieldset>
-                                    <div class="button-submit">
-                                        <button class="" type="submit"><i class="icon-search"></i></button>
-                                    </div>
-                                    <div class="box-content-search" id="box-content-search">
-                                        <ul class="mb-24">
-                                            <li class="mb-14">
-                                                <div class="body-title">Top selling product</div>
-                                            </li>
-                                            <li class="mb-14">
-                                                <div class="divider"></div>
-                                            </li>
-                                            <li>
-                                                <ul>
-                                                    <li class="product-item gap14 mb-10">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/17.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.php" class="body-text">Dog Food Rachael Ray Nutrish®</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="mb-10">
-                                                        <div class="divider"></div>
-                                                    </li>
-                                                    <li class="product-item gap14 mb-10">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/18.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.php" class="body-text">Natural Dog Food Healthy Dog Food</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="mb-10">
-                                                        <div class="divider"></div>
-                                                    </li>
-                                                    <li class="product-item gap14">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/19.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.php" class="body-text">Freshpet Healthy Dog Food and Cat</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                        <ul class="">
-                                            <li class="mb-14">
-                                                <div class="body-title">Order product</div>
-                                            </li>
-                                            <li class="mb-14">
-                                                <div class="divider"></div>
-                                            </li>
-                                            <li>
-                                                <ul>
-                                                    <li class="product-item gap14 mb-10">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/20.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.php" class="body-text">Sojos Crunchy Natural Grain Free...</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="mb-10">
-                                                        <div class="divider"></div>
-                                                    </li>
-                                                    <li class="product-item gap14 mb-10">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/21.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.php" class="body-text">Kristin Watson</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="mb-10">
-                                                        <div class="divider"></div>
-                                                    </li>
-                                                    <li class="product-item gap14 mb-10">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/22.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.php" class="body-text">Mega Pumpkin Bone</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li class="mb-10">
-                                                        <div class="divider"></div>
-                                                    </li>
-                                                    <li class="product-item gap14">
-                                                        <div class="image no-bg">
-                                                            <img src="images/products/23.png" alt="">
-                                                        </div>
-                                                        <div class="flex items-center justify-between gap20 flex-grow">
-                                                            <div class="name">
-                                                                <a href="product-list.php" class="body-text">Mega Pumpkin Bone</a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="header-grid">
-                                <div class="header-item country">
-                                    <select class="image-select no-text">
-                                        <option data-thumbnail="images/country/1.png">ENG</option>
-                                        <option data-thumbnail="images/country/9.png">VIE</option>
-                                    </select>
-                                </div>
-                                <div class="header-item button-dark-light">
-                                    <i class="icon-moon"></i>
-                                </div>
-                                <div class="popup-wrap noti type-header">
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <span class="header-item">
-                                                <span class="text-tiny">1</span>
-                                                <i class="icon-bell"></i>
-                                            </span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton1" >
-                                            <li>
-                                                <h6>Message</h6>
-                                            </li>
-                                            <li>
-                                                <div class="noti-item w-full wg-user active">
-                                                    <div class="image">
-                                                        <img src="images/avatar/user-11.png" alt="">
-                                                    </div>
-                                                    <div class="flex-grow">
-                                                        <div class="flex items-center justify-between">
-                                                            <a href="#" class="body-title">Cameron Williamson</a>
-                                                            <div class="time">10:13 PM</div>
-                                                        </div>
-                                                        <div class="text-tiny">Hello?</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="noti-item w-full wg-user active">
-                                                    <div class="image">
-                                                        <img src="images/avatar/user-12.png" alt="">
-                                                    </div>
-                                                    <div class="flex-grow">
-                                                        <div class="flex items-center justify-between">
-                                                            <a href="#" class="body-title">Ralph Edwards</a>
-                                                            <div class="time">10:13 PM</div>
-                                                        </div>
-                                                        <div class="text-tiny">Are you there?  interested i this...</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="noti-item w-full wg-user active">
-                                                    <div class="image">
-                                                        <img src="images/avatar/user-13.png" alt="">
-                                                    </div>
-                                                    <div class="flex-grow">
-                                                        <div class="flex items-center justify-between">
-                                                            <a href="#" class="body-title">Eleanor Pena</a>
-                                                            <div class="time">10:13 PM</div>
-                                                        </div>
-                                                        <div class="text-tiny">Interested in this loads?</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="noti-item w-full wg-user active">
-                                                    <div class="image">
-                                                        <img src="images/avatar/user-11.png" alt="">
-                                                    </div>
-                                                    <div class="flex-grow">
-                                                        <div class="flex items-center justify-between">
-                                                            <a href="#" class="body-title">Jane Cooper</a>
-                                                            <div class="time">10:13 PM</div>
-                                                        </div>
-                                                        <div class="text-tiny">Okay...Do we have a deal?</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li><a href="#" class="tf-button w-full">View all</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="popup-wrap message type-header">
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <span class="header-item">
-                                                <span class="text-tiny">1</span>
-                                                <i class="icon-message-square"></i>
-                                            </span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton2" >
-                                            <li>
-                                                <h6>Notifications</h6>
-                                            </li>
-                                            <li>
-                                                <div class="message-item item-1">
-                                                    <div class="image">
-                                                        <i class="icon-noti-1"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="body-title-2">Discount available</div>
-                                                        <div class="text-tiny">Morbi sapien massa, ultricies at rhoncus at, ullamcorper nec diam</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="message-item item-2">
-                                                    <div class="image">
-                                                        <i class="icon-noti-2"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="body-title-2">Account has been verified</div>
-                                                        <div class="text-tiny">Mauris libero ex, iaculis vitae rhoncus et</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="message-item item-3">
-                                                    <div class="image">
-                                                        <i class="icon-noti-3"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="body-title-2">Order shipped successfully</div>
-                                                        <div class="text-tiny">Integer aliquam eros nec sollicitudin sollicitudin</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="message-item item-4">
-                                                    <div class="image">
-                                                        <i class="icon-noti-4"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div class="body-title-2">Order pending: <span>ID 305830</span></div>
-                                                        <div class="text-tiny">Ultricies at rhoncus at ullamcorper</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li><a href="#" class="tf-button w-full">View all</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="header-item button-zoom-maximize">
-                                    <div class="">
-                                        <i class="icon-maximize"></i>
-                                    </div>
-                                </div>
-                                <div class="popup-wrap apps type-header">
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <span class="header-item">
-                                                <i class="icon-grid"></i>
-                                            </span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton4" >
-                                            <li>
-                                                <h6>Related apps</h6>
-                                            </li>
-                                            <li>
-                                                <ul class="list-apps">
-                                                    <li class="item">
-                                                        <div class="image">
-                                                            <img src="images/apps/item-1.png" alt="">
-                                                        </div>
-                                                        <a href="#">
-                                                            <div class="text-tiny">Photoshop</div>
-                                                        </a>
-                                                    </li>
-                                                    <li class="item">
-                                                        <div class="image">
-                                                            <img src="images/apps/item-2.png" alt="">
-                                                        </div>
-                                                        <a href="#">
-                                                            <div class="text-tiny">illustrator</div>
-                                                        </a>
-                                                    </li>
-                                                    <li class="item">
-                                                        <div class="image">
-                                                            <img src="images/apps/item-3.png" alt="">
-                                                        </div>
-                                                        <a href="#">
-                                                            <div class="text-tiny">Sheets</div>
-                                                        </a>
-                                                    </li>
-                                                    <li class="item">
-                                                        <div class="image">
-                                                            <img src="images/apps/item-4.png" alt="">
-                                                        </div>
-                                                        <a href="#">
-                                                            <div class="text-tiny">Gmail</div>
-                                                        </a>
-                                                    </li>
-                                                    <li class="item">
-                                                        <div class="image">
-                                                            <img src="images/apps/item-5.png" alt="">
-                                                        </div>
-                                                        <a href="#">
-                                                            <div class="text-tiny">Messenger</div>
-                                                        </a>
-                                                    </li>
-                                                    <li class="item">
-                                                        <div class="image">
-                                                            <img src="images/apps/item-6.png" alt="">
-                                                        </div>
-                                                        <a href="#">
-                                                            <div class="text-tiny">Youtube</div>
-                                                        </a>
-                                                    </li>
-                                                    <li class="item">
-                                                        <div class="image">
-                                                            <img src="images/apps/item-7.png" alt="">
-                                                        </div>
-                                                        <a href="#">
-                                                            <div class="text-tiny">Flaticon</div>
-                                                        </a>
-                                                    </li>
-                                                    <li class="item">
-                                                        <div class="image">
-                                                            <img src="images/apps/item-8.png" alt="">
-                                                        </div>
-                                                        <a href="#">
-                                                            <div class="text-tiny">Instagram</div>
-                                                        </a>
-                                                    </li>
-                                                    <li class="item">
-                                                        <div class="image">
-                                                            <img src="images/apps/item-9.png" alt="">
-                                                        </div>
-                                                        <a href="#">
-                                                            <div class="text-tiny">PDF</div>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="#" class="tf-button w-full">View all app</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="popup-wrap user type-header">
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <span class="header-user wg-user">
-                                                <span class="image">
-                                                    <img src="images/avatar/user-1.png" alt="">
-                                                </span>
-                                                <span class="flex flex-column">
-                                                    <span class="body-title mb-2">Kristin Watson</span>
-                                                    <span class="text-tiny">Admin</span>
-                                                </span>
-                                            </span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton3" >
-                                            <li>
-                                                <a href="#" class="user-item">
-                                                    <div class="icon">
-                                                        <i class="icon-user"></i>
-                                                    </div>
-                                                    <div class="body-title-2">Account</div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="user-item">
-                                                    <div class="icon">
-                                                        <i class="icon-mail"></i>
-                                                    </div>
-                                                    <div class="body-title-2">Inbox</div>
-                                                    <div class="number">27</div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="user-item">
-                                                    <div class="icon">
-                                                        <i class="icon-file-text"></i>
-                                                    </div>
-                                                    <div class="body-title-2">Taskboard</div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="setting.php" class="user-item">
-                                                    <div class="icon">
-                                                        <i class="icon-settings"></i>
-                                                    </div>
-                                                    <div class="body-title-2">Setting</div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="user-item">
-                                                    <div class="icon">
-                                                        <i class="icon-headphones"></i>
-                                                    </div>
-                                                    <div class="body-title-2">Support</div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="login.php" class="user-item">
-                                                    <div class="icon">
-                                                        <i class="icon-log-out"></i>
-                                                    </div>
-                                                    <div class="body-title-2">Log out</div>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /header-dashboard -->
-                    <!-- main-content -->
-                    <div class="main-content">
-                        <!-- main-content-wrap -->
-                        <div class="main-content-inner">
-                            <!-- main-content-wrap -->
-                            <div class="main-content-wrap">
-                                <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-                                    <h3>Add Product</h3>
-                                    <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
-                                        <li>
-                                            <a href="index.php"><div class="text-tiny">Dashboard</div></a>
-                                        </li>
-                                        <li>
-                                            <i class="icon-chevron-right"></i>
-                                        </li>
-                                        <li>
-                                            <a href="#"><div class="text-tiny">Ecommerce</div></a>
-                                        </li>
-                                        <li>
-                                            <i class="icon-chevron-right"></i>
-                                        </li>
-                                        <li>
-                                            <div class="text-tiny">Add product</div>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <!-- form-add-product -->
-                                <form class="tf-section-2 form-add-product" >
-                                    <div class="wg-box">
-                                        <fieldset class="name">
-                                            <div class="body-title mb-10">Product name <span class="tf-color-1">*</span></div>
-                                            <input class="mb-10" type="text" placeholder="Enter product name" name="text" tabindex="0" value="" aria-required="true" required="">
-                                            <div class="text-tiny">Do not exceed 20 characters when entering the product name.</div>
-                                        </fieldset>
-                                        <div class="gap22 cols">
-                                            <fieldset class="category">
-                                                <div class="body-title mb-10">Category <span class="tf-color-1">*</span></div>
-                                                <div class="select">
-                                                    <select class="">
-                                                        <option>Choose category</option>
-                                                        <option>Shop</option>
-                                                        <option>Product</option>
-                                                    </select>
-                                                </div>
-                                            </fieldset>
-                                            <fieldset class="male">
-                                                <div class="body-title mb-10">Gender <span class="tf-color-1">*</span></div>
-                                                <div class="select">
-                                                    <select class="">
-                                                        <option>Male</option>
-                                                        <option>Female</option>
-                                                        <option>Other</option>
-                                                    </select>
-                                                </div>
-                                            </fieldset>
-                                        </div>
-                                        <fieldset class="brand">
-                                            <div class="body-title mb-10">Brand <span class="tf-color-1">*</span></div>
-                                            <div class="select">
-                                                <select class="">
-                                                    <option>Choose category</option>
-                                                    <option>Shop</option>
-                                                    <option>Product</option>
-                                                </select>
+                                        <div class="flex items-center justify-between gap20 flex-grow">
+                                            <div class="name">
+                                                <a href="product-list.php" class="body-text">Dog Food Rachael Ray Nutrish®</a>
                                             </div>
-                                        </fieldset>
-                                        <fieldset class="description">
-                                            <div class="body-title mb-10">Description <span class="tf-color-1">*</span></div>
-                                            <textarea class="mb-10" name="description" placeholder="Description" tabindex="0" aria-required="true" required=""></textarea>
-                                            <div class="text-tiny">Do not exceed 100 characters when entering the product name.</div>
-                                        </fieldset>
-                                    </div>
-                                    <div class="wg-box">
-                                        <fieldset>
-                                            <div class="body-title mb-10">Upload images</div>
-                                            <div class="upload-image mb-16">
-                                                <div class="item">
-                                                    <img src="images/upload/upload-1.png" alt="">
-                                                </div>
-                                                <div class="item">
-                                                    <img src="images/upload/upload-2.png" alt="">
-                                                </div>
-                                                <div class="item up-load">
-                                                    <label class="uploadfile" for="myFile">
-                                                        <span class="icon">
-                                                            <i class="icon-upload-cloud"></i>
-                                                        </span>
-                                                        <span class="text-tiny">Drop your images here or select <span class="tf-color">click to browse</span></span>
-                                                        <input type="file" id="myFile" name="filename">
-                                                    </label>
-                                                </div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-10">
+                                        <div class="divider"></div>
+                                    </li>
+                                    <li class="product-item gap14 mb-10">
+                                        <div class="image no-bg">
+                                            <img src="images/products/18.png" alt="">
+                                        </div>
+                                        <div class="flex items-center justify-between gap20 flex-grow">
+                                            <div class="name">
+                                                <a href="product-list.php" class="body-text">Natural Dog Food Healthy Dog Food</a>
                                             </div>
-                                            <div class="body-text">You need to add at least 4 images. Pay attention to the quality of the pictures you add, comply with the background color standards. Pictures must be in certain dimensions. Notice that the product shows all the details</div>
-                                        </fieldset>
-                                        <div class="cols gap22">
-                                            <fieldset class="name">
-                                                <div class="body-title mb-10">Add size</div>
-                                                <div class="select mb-10">
-                                                    <select class="">
-                                                        <option>EU - 44</option>
-                                                        <option>EU - 40</option>
-                                                        <option>EU - 50</option>
-                                                    </select>
-                                                </div>
-                                                <div class="list-box-value mb-10">
-                                                    <div class="box-value-item"><div class="body-text">EU - 38.5</div></div>
-                                                    <div class="box-value-item"><div class="body-text">EU - 39</div></div>
-                                                    <div class="box-value-item"><div class="body-text">EU - 40</div></div>
-                                                </div>
-                                                <div class="list-box-value">
-                                                    <div class="box-value-item"><div class="body-text">EU - 41.5</div></div>
-                                                    <div class="box-value-item"><div class="body-text">EU - 42</div></div>
-                                                    <div class="box-value-item"><div class="body-text">EU - 43</div></div>
-                                                </div>
-                                            </fieldset>
-                                            <fieldset class="name">
-                                                <div class="body-title mb-10">Product date</div>
-                                                <div class="select">
-                                                    <input type="date" name="date" value="2023-11-20">
-                                                </div>
-                                            </fieldset>
                                         </div>
-                                        <div class="cols gap10">
-                                            <button class="tf-button w-full" type="submit">Add product</button>
-                                            <button class="tf-button style-1 w-full" type="submit">Save product</button>
-                                            <a href="#" class="tf-button style-2 w-full">Schedule</a>
+                                    </li>
+                                    <li class="mb-10">
+                                        <div class="divider"></div>
+                                    </li>
+                                    <li class="product-item gap14">
+                                        <div class="image no-bg">
+                                            <img src="images/products/19.png" alt="">
                                         </div>
-                                    </div>
-                                </form>
-                                <!-- /form-add-product -->
-                            </div>
-                            <!-- /main-content-wrap -->
-                        </div>
-                        <!-- /main-content-wrap -->
-                        <!-- bottom-page -->
-                        <div class="bottom-page">
-                            <div class="body-text">Copyright © 2024 Remos. Design with</div>
-                            <i class="icon-heart"></i>
-                            <div class="body-text">by <a href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights reserved.</div>
-                        </div>
-                        <!-- /bottom-page -->
+                                        <div class="flex items-center justify-between gap20 flex-grow">
+                                            <div class="name">
+                                                <a href="product-list.php" class="body-text">Freshpet Healthy Dog Food and Cat</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="">
+                            <li class="mb-14">
+                                <div class="body-title">Order product</div>
+                            </li>
+                            <li class="mb-14">
+                                <div class="divider"></div>
+                            </li>
+                            <li>
+                                <ul>
+                                    <li class="product-item gap14 mb-10">
+                                        <div class="image no-bg">
+                                            <img src="images/products/20.png" alt="">
+                                        </div>
+                                        <div class="flex items-center justify-between gap20 flex-grow">
+                                            <div class="name">
+                                                <a href="product-list.php" class="body-text">Sojos Crunchy Natural Grain Free...</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-10">
+                                        <div class="divider"></div>
+                                    </li>
+                                    <li class="product-item gap14 mb-10">
+                                        <div class="image no-bg">
+                                            <img src="images/products/21.png" alt="">
+                                        </div>
+                                        <div class="flex items-center justify-between gap20 flex-grow">
+                                            <div class="name">
+                                                <a href="product-list.php" class="body-text">Kristin Watson</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-10">
+                                        <div class="divider"></div>
+                                    </li>
+                                    <li class="product-item gap14 mb-10">
+                                        <div class="image no-bg">
+                                            <img src="images/products/22.png" alt="">
+                                        </div>
+                                        <div class="flex items-center justify-between gap20 flex-grow">
+                                            <div class="name">
+                                                <a href="product-list.php" class="body-text">Mega Pumpkin Bone</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="mb-10">
+                                        <div class="divider"></div>
+                                    </li>
+                                    <li class="product-item gap14">
+                                        <div class="image no-bg">
+                                            <img src="images/products/23.png" alt="">
+                                        </div>
+                                        <div class="flex items-center justify-between gap20 flex-grow">
+                                            <div class="name">
+                                                <a href="product-list.php" class="body-text">Mega Pumpkin Bone</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
-                    <!-- /main-content -->
-                </div>
-                <!-- /section-content-right -->
+                </form>
             </div>
-            <!-- /layout-wrap -->
+            <div class="header-grid">
+                <div class="header-item country">
+                    <select class="image-select no-text">
+                        <option data-thumbnail="images/country/1.png">ENG</option>
+                        <option data-thumbnail="images/country/9.png">VIE</option>
+                    </select>
+                </div>
+                <div class="header-item button-dark-light">
+                    <i class="icon-moon"></i>
+                </div>
+                <div class="popup-wrap noti type-header">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="header-item">
+                                <span class="text-tiny">1</span>
+                                <i class="icon-bell"></i>
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton1">
+                            <li>
+                                <h6>Message</h6>
+                            </li>
+                            <li>
+                                <div class="noti-item w-full wg-user active">
+                                    <div class="image">
+                                        <img src="images/avatar/user-11.png" alt="">
+                                    </div>
+                                    <div class="flex-grow">
+                                        <div class="flex items-center justify-between">
+                                            <a href="#" class="body-title">Cameron Williamson</a>
+                                            <div class="time">10:13 PM</div>
+                                        </div>
+                                        <div class="text-tiny">Hello?</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="noti-item w-full wg-user active">
+                                    <div class="image">
+                                        <img src="images/avatar/user-12.png" alt="">
+                                    </div>
+                                    <div class="flex-grow">
+                                        <div class="flex items-center justify-between">
+                                            <a href="#" class="body-title">Ralph Edwards</a>
+                                            <div class="time">10:13 PM</div>
+                                        </div>
+                                        <div class="text-tiny">Are you there? interested i this...</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="noti-item w-full wg-user active">
+                                    <div class="image">
+                                        <img src="images/avatar/user-13.png" alt="">
+                                    </div>
+                                    <div class="flex-grow">
+                                        <div class="flex items-center justify-between">
+                                            <a href="#" class="body-title">Eleanor Pena</a>
+                                            <div class="time">10:13 PM</div>
+                                        </div>
+                                        <div class="text-tiny">Interested in this loads?</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="noti-item w-full wg-user active">
+                                    <div class="image">
+                                        <img src="images/avatar/user-11.png" alt="">
+                                    </div>
+                                    <div class="flex-grow">
+                                        <div class="flex items-center justify-between">
+                                            <a href="#" class="body-title">Jane Cooper</a>
+                                            <div class="time">10:13 PM</div>
+                                        </div>
+                                        <div class="text-tiny">Okay...Do we have a deal?</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><a href="#" class="tf-button w-full">View all</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="popup-wrap message type-header">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="header-item">
+                                <span class="text-tiny">1</span>
+                                <i class="icon-message-square"></i>
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton2">
+                            <li>
+                                <h6>Notifications</h6>
+                            </li>
+                            <li>
+                                <div class="message-item item-1">
+                                    <div class="image">
+                                        <i class="icon-noti-1"></i>
+                                    </div>
+                                    <div>
+                                        <div class="body-title-2">Discount available</div>
+                                        <div class="text-tiny">Morbi sapien massa, ultricies at rhoncus at, ullamcorper nec diam</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="message-item item-2">
+                                    <div class="image">
+                                        <i class="icon-noti-2"></i>
+                                    </div>
+                                    <div>
+                                        <div class="body-title-2">Account has been verified</div>
+                                        <div class="text-tiny">Mauris libero ex, iaculis vitae rhoncus et</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="message-item item-3">
+                                    <div class="image">
+                                        <i class="icon-noti-3"></i>
+                                    </div>
+                                    <div>
+                                        <div class="body-title-2">Order shipped successfully</div>
+                                        <div class="text-tiny">Integer aliquam eros nec sollicitudin sollicitudin</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="message-item item-4">
+                                    <div class="image">
+                                        <i class="icon-noti-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="body-title-2">Order pending: <span>ID 305830</span></div>
+                                        <div class="text-tiny">Ultricies at rhoncus at ullamcorper</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><a href="#" class="tf-button w-full">View all</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="header-item button-zoom-maximize">
+                    <div class="">
+                        <i class="icon-maximize"></i>
+                    </div>
+                </div>
+                <div class="popup-wrap apps type-header">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="header-item">
+                                <i class="icon-grid"></i>
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton4">
+                            <li>
+                                <h6>Related apps</h6>
+                            </li>
+                            <li>
+                                <ul class="list-apps">
+                                    <li class="item">
+                                        <div class="image">
+                                            <img src="images/apps/item-1.png" alt="">
+                                        </div>
+                                        <a href="#">
+                                            <div class="text-tiny">Photoshop</div>
+                                        </a>
+                                    </li>
+                                    <li class="item">
+                                        <div class="image">
+                                            <img src="images/apps/item-2.png" alt="">
+                                        </div>
+                                        <a href="#">
+                                            <div class="text-tiny">illustrator</div>
+                                        </a>
+                                    </li>
+                                    <li class="item">
+                                        <div class="image">
+                                            <img src="images/apps/item-3.png" alt="">
+                                        </div>
+                                        <a href="#">
+                                            <div class="text-tiny">Sheets</div>
+                                        </a>
+                                    </li>
+                                    <li class="item">
+                                        <div class="image">
+                                            <img src="images/apps/item-4.png" alt="">
+                                        </div>
+                                        <a href="#">
+                                            <div class="text-tiny">Gmail</div>
+                                        </a>
+                                    </li>
+                                    <li class="item">
+                                        <div class="image">
+                                            <img src="images/apps/item-5.png" alt="">
+                                        </div>
+                                        <a href="#">
+                                            <div class="text-tiny">Messenger</div>
+                                        </a>
+                                    </li>
+                                    <li class="item">
+                                        <div class="image">
+                                            <img src="images/apps/item-6.png" alt="">
+                                        </div>
+                                        <a href="#">
+                                            <div class="text-tiny">Youtube</div>
+                                        </a>
+                                    </li>
+                                    <li class="item">
+                                        <div class="image">
+                                            <img src="images/apps/item-7.png" alt="">
+                                        </div>
+                                        <a href="#">
+                                            <div class="text-tiny">Flaticon</div>
+                                        </a>
+                                    </li>
+                                    <li class="item">
+                                        <div class="image">
+                                            <img src="images/apps/item-8.png" alt="">
+                                        </div>
+                                        <a href="#">
+                                            <div class="text-tiny">Instagram</div>
+                                        </a>
+                                    </li>
+                                    <li class="item">
+                                        <div class="image">
+                                            <img src="images/apps/item-9.png" alt="">
+                                        </div>
+                                        <a href="#">
+                                            <div class="text-tiny">PDF</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a href="#" class="tf-button w-full">View all app</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="popup-wrap user type-header">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="header-user wg-user">
+                                <span class="image">
+                                    <img src="images/avatar/user-1.png" alt="">
+                                </span>
+                                <span class="flex flex-column">
+                                    <span class="body-title mb-2">Kristin Watson</span>
+                                    <span class="text-tiny">Admin</span>
+                                </span>
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton3">
+                            <li>
+                                <a href="#" class="user-item">
+                                    <div class="icon">
+                                        <i class="icon-user"></i>
+                                    </div>
+                                    <div class="body-title-2">Account</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="user-item">
+                                    <div class="icon">
+                                        <i class="icon-mail"></i>
+                                    </div>
+                                    <div class="body-title-2">Inbox</div>
+                                    <div class="number">27</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="user-item">
+                                    <div class="icon">
+                                        <i class="icon-file-text"></i>
+                                    </div>
+                                    <div class="body-title-2">Taskboard</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="setting.php" class="user-item">
+                                    <div class="icon">
+                                        <i class="icon-settings"></i>
+                                    </div>
+                                    <div class="body-title-2">Setting</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="user-item">
+                                    <div class="icon">
+                                        <i class="icon-headphones"></i>
+                                    </div>
+                                    <div class="body-title-2">Support</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="login.php" class="user-item">
+                                    <div class="icon">
+                                        <i class="icon-log-out"></i>
+                                    </div>
+                                    <div class="body-title-2">Log out</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- /#page -->
     </div>
-    <!-- /#wrapper -->
+    <!-- /header-dashboard -->
+    <!-- main-content -->
+    <div class="main-content">
+        <!-- main-content-wrap -->
+        <div class="main-content-inner">
+            <!-- main-content-wrap -->
+            <div class="main-content-wrap">
+                <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                    <h3>Add Product</h3>
+                    <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                        <li>
+                            <a href="index.php">
+                                <div class="text-tiny">Dashboard</div>
+                            </a>
+                        </li>
+                        <li>
+                            <i class="icon-chevron-right"></i>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <div class="text-tiny">Ecommerce</div>
+                            </a>
+                        </li>
+                        <li>
+                            <i class="icon-chevron-right"></i>
+                        </li>
+                        <li>
+                            <div class="text-tiny">Add product</div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- form-add-product -->
+                <div class="mb-10">
+                    <?=
+                    !empty($response) ? ($response['success'] === false
+                        ? '<div class="block-warning">
+                                        <i class="icon-alert-octagon"></i>
+                                        <div class="body-title-2">
+                                            ' . $response['message'] . '
+                                        </div>
+                                    </div>'
+                        : '<div class="block-warning type-main">
+                                        <i class="icon-alert-octagon"></i>
+                                        <div class="body-title-2">
+                                            ' . $response['message'] . '
+                                        </div>
+                                    </div>')
+                        : ''
+                    ?>
+                </div>
+                <form class="tf-section-2 form-add-product" method="POST" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" enctype="multipart/form-data">
 
-    <!-- Javascript -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-select.min.js"></script>
-    <script src="js/zoom.js"></script>
-    <script src="js/switcher.js"></script>
-    <script src="js/theme-settings.js"></script>
-    <script src="js/main.js"></script>
+                    <div class="wg-box">
+                        <fieldset class="product_name">
+                            <div class="body-title mb-10">Product name<span class="tf-color-1">*</span></div>
+                            <input class="mb-10" type="text" value="<?= isset($_POST["product_name"]) ? $_POST["product_name"] : $product_name ?>" placeholder="Enter product name" name="product_name" tabindex="0" value="" aria-required="true" required="">
+                            <div class="text-tiny">Do not exceed 20 characters when entering the product name.</div>
+
+                            <?= isset($response) && isset($response['error']) && isset($response['error']['product_name'])
+                                ? '
+                                    <div class="fa-sm mt-2 tf-color-1">
+                                        ' . $response["error"]["product_name"] . '
+                                        <span class="tf-color-1">*</span>
+                                    </div>
+                                    '
+                                : ''  ?>
+                        </fieldset>
+                        <div class="gap22 cols">
+                            <fieldset class="category">
+                                <div class="body-title mb-10">Category <span class="tf-color-1">*</span></div>
+                                <div class="">
+                                    <select name="category" class="" required>
+                                        <?php
+                                        if (isset($_POST["category"])) {
+                                            $name = findItemById($category['data'], 'category_id', $_POST["category"]);
+
+                                            echo isset($name)
+                                                ? '<option value="' . $_POST["gender"] . '"> ' . $name . ' </option>'
+                                                : '<option value="0">Choose category</option>';
+                                        } else {
+                                            echo '<option value="0">Choose category</option>';
+                                        } ?>
+                                        <?php
+                                        $count = 0;
+                                        while ($count < count($category['data'])) {
+                                            echo '
+                                            <option ' . (isset($_POST["category"]) ? ($_POST["category"] == $category['data'][$count]["category_id"] ? 'selected' : '') : '') . ' value="' . $category['data'][$count]["category_id"] . '">
+                                                ' . $category['data'][$count]["category_name"] . '
+                                            </option>
+                                            ';
+                                            $count++;
+                                        }
+                                        ?>
+                                    </select>
+
+                                    <?= isset($response) && isset($response['error']) && isset($response['error']['category_id'])
+                                        ? '
+                                    <div class="fa-sm mt-2 tf-color-1">
+                                        ' . $response["error"]["category_id"] . '
+                                        <span class="tf-color-1">*</span>
+                                    </div>
+                                    '
+                                        : ''  ?>
+                                </div>
+                            </fieldset>
+                            <fieldset class="male">
+                                <div class="body-title mb-10">Gender <span class="tf-color-1">*</span></div>
+
+                                <select name="gender" class="" required>
+                                    <?php
+                                    if (isset($response) && isset($response['error']) && isset($response['error']['gender'])) {
+                                        $name = findItemById(
+                                            [
+                                                'Male' => 'Male',
+                                                'Female' => 'Female',
+                                                'Unisex' => 'Unisex',
+                                            ],
+                                            $_POST["gender"],
+                                            $_POST["gender"]
+                                        );
+
+                                        echo isset($name)
+                                            ? '<option value="' . $_POST["gender"] . '"> ' . $name . ' </option>'
+                                            : '<option value="0">Choose gender</option>';
+                                    } else {
+                                        echo '<option value="0">Choose gender</option>';
+                                    }
+                                    ?>
+                                    <option <?= isset($_POST["gender"]) ? ($_POST["gender"] == 'Male' ? 'selected' : '') : '' ?> value="Male">Male</option>
+                                    <option <?= isset($_POST["gender"]) ? ($_POST["gender"] == 'Female' ? 'selected' : '') : '' ?> value="Female">Female</option>
+                                    <option <?= isset($_POST["gender"]) ? ($_POST["gender"] == 'Unisex' ? 'selected' : '') : '' ?> value="Unisex">Unisex</option>
+                                </select>
+
+                                <?= isset($response) && isset($response['error']) && isset($response['error']['gender'])
+                                    ? '
+                                    <div class="fa-sm mt-2 tf-color-1">
+                                        ' . $response["error"]["gender"] . '
+                                        <span class="tf-color-1">*</span>
+                                    </div>
+                                    '
+                                    : ''  ?>
+                            </fieldset>
+                        </div>
+
+                        <fieldset class="brand">
+                            <div class="body-title mb-10">Brand <span class="tf-color-1">*</span></div>
+                            <select name="brand" class="" required>
+                                <?php
+                                if (isset($_POST["brand"])) {
+                                    $name = findItemById($brands['data'], 'brand_id', $_POST["brand"]);
+
+                                    echo isset($name)
+                                        ? '<option value="' . $_POST["brand"] . '"> ' . $name . ' </option>'
+                                        : '<option value="0">Choose brand</option>';
+                                } else {
+                                    echo '<option value="0">Choose brand</option>';
+                                }
+                                $count = 0;
+                                while ($count < count($brands['data'])) {
+                                    echo '
+                                        <option ' . (isset($_POST["brand"]) ? ($_POST["brand"] == $brands['data'][$count]["brand_id"] ? 'selected' : '') : '') . ' value="' . $brands['data'][$count]["brand_id"] . '">
+                                            ' . $brands['data'][$count]["brand_name"] . '
+                                        </option>
+                                        ';
+                                    $count++;
+                                }
+                                ?>
+                            </select>
+                            <?= isset($response) && isset($response['error']) && isset($response['error']['brand_id'])
+                                ? '
+                                    <div class="fa-sm mt-2 tf-color-1">
+                                        ' . $response["error"]["brand_id"] . '
+                                        <span class="tf-color-1">*</span>
+                                    </div>
+                                    '
+                                : ''  ?>
+                        </fieldset>
+
+                        <div class="cols gap22">
+                            <fieldset class="male">
+                                <div class="body-title mb-10">Quantity <span class="tf-color-1">*</span></div>
+                                <input type="text" value="<?= isset($_POST["quantity"]) ? $_POST["quantity"] : $quantity ?>" name="quantity" placeholder="0" required>
+                            </fieldset>
+                            <fieldset class="male">
+                                <div class="body-title mb-10">Price <span class="tf-color-1">*</span></div>
+                                <input type="text" value="<?= isset($_POST["price"]) ? $_POST["price"] : $price ?>" name="price" placeholder="₦0.0" required>
+                            </fieldset>
+
+                        </div>
+
+                        <fieldset class="description">
+                            <div class="body-title mb-10">Description <span class="tf-color-1">*</span></div>
+                            <textarea class="mb-10" value="<?= isset($_POST["description"]) ? $_POST["description"] : $description ?>" name="description" id="myTextarea" placeholder="Description" tabindex="0" aria-required="true" required=""></textarea>
+                            <div class="text-tiny">Do not exceed 255 characters when entering the product name.</div>
+                        </fieldset>
+                    </div>
+                    <div class="wg-box flex flex-column justify-content-between h-full">
+                        <div class="">
+                            <fieldset class="mb-20">
+                                <div class="body-title mb-10">Upload images</div>
+                                <div class="flex gap-4 align-items-center">
+                                    <div class="upload-image mb-16 overflow-auto w-full" style="min-height: 120px !important; border: dashed 1px;  padding: 1em !important;" id="imagePreview">
+                                    </div>
+                                    <div class="upload-image">
+
+                                        <div class="item border-primary" style="width: 120px; height: 120px !important; border: dashed 1px;">
+                                            <label class="uploadfile p-0" for="imageInput">
+
+                                                <span class="icon">
+                                                    <i class="icon-upload-cloud"></i>
+                                                </span>
+
+                                                <span class="text-tiny">Drop your images here or select <span class="tf-color">click to browse</span></span>
+                                                <input type="file" id="imageInput" value="<?= isset($response) && isset($response['error']) ? $_FILES["product_images"] : $product_images ?>" multiple accept="image/*" required name="product_images[]">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="body-text">You need to add at least 4 images. Pay attention to the quality of the pictures you add, comply with the background color standards. Pictures must be in certain dimensions. Notice that the product shows all the details</div>
+                            </fieldset>
+
+
+                            <div class="cols gap22 mb-10">
+                                <fieldset class="name">
+                                    <div class="body-title mb-10">Available sizes</div>
+                                    <div class="flex gap-4">
+                                        <div class="mb-10 w-full">
+                                            <fieldset class="name w-full">
+                                                <input class="mb-10 w-full" name="size[]" id="mainSizeInput" type="text" placeholder="Enter available size" name="text" tabindex="0" value="">
+                                            </fieldset>
+                                        </div>
+
+                                        <div class="cols mb-20 gap10" style="margin-left: auto;">
+                                            <button id="createInputBtn" onclick="createReadOnlyInput('mainSizeInput', 'readonlyInputsSizeContainer', 'size[]')" class="tf-button btn bg-transparent text-primary" type="button">Add Size</button>
+                                        </div>
+                                    </div>
+                                    <div class="list-box-value" id="readonlyInputsSizeContainer"></div>
+                                </fieldset>
+                            </div>
+
+                            <div class="cols gap22">
+                                <fieldset class="name">
+                                    <div class="body-title mb-10">Available colors</div>
+                                    <div class="flex gap-4">
+                                        <div class="mb-10 w-full">
+                                            <fieldset class="name w-full">
+                                                <input class="mb-10 w-full" name="colors[]" id="mainColorInput" type="text" placeholder="Enter available colors" name="text" tabindex="0" value="">
+                                            </fieldset>
+                                        </div>
+
+                                        <div class="cols mb-20 gap10" style="margin-left: auto;">
+                                            <button id="createInputBtn" onclick="createReadOnlyInput('mainColorInput', 'readonlyInputsColorContainer', 'color[]')" class="tf-button btn bg-transparent text-primary" type="button">Add Color</button>
+                                        </div>
+                                    </div>
+                                    <div class="list-box-value" id="readonlyInputsColorContainer"></div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="cols gap10">
+                            <button class="tf-button w-full" name="add-product" type="submit">Add product</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- /form-add-product -->
+            </div>
+            <!-- /main-content-wrap -->
+        </div>
+        <!-- /main-content-wrap -->
+        <!-- bottom-page -->
+        <div class="bottom-page">
+            <div class="body-text">Copyright © 2024 OLA EMMA. Design with</div>
+            <i class="icon-heart"></i>
+            <div class="body-text">by <a href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights reserved.</div>
+        </div>
+        <!-- /bottom-page -->
+    </div>
+    <!-- /main-content -->
+</div>
+<!-- /section-content-right -->
+</div>
+<!-- /layout-wrap -->
+</div>
+<!-- /#page -->
+</div>
+<!-- /#wrapper -->
+
+<!-- Javascript -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-select.min.js"></script>
+<script src="js/zoom.js"></script>
+<script src="js/switcher.js"></script>
+<script src="js/theme-settings.js"></script>
+<script src="js/main.js"></script>
 
 </body>
+
+<script>
+    function createReadOnlyInput(mainInputId, containerId, nameAttribute) {
+        // Get value from the main input
+        var mainInputValue = document.getElementById(mainInputId).value;
+
+        if (mainInputValue.trim() !== '') {
+            // Create a new readonly input element
+            var newInput = document.createElement('div');
+            newInput.className = 'flex align-items-center gap-4';
+
+            var inputField = document.createElement('input');
+            inputField.type = 'text';
+            inputField.value = mainInputValue;
+            inputField.readOnly = true;
+            inputField.maxLength = 10;
+            inputField.name = nameAttribute; // Set the name attribute
+            inputField.classList.add('border-0');
+            inputField.classList.add('px-0');
+            newInput.style.width = '150px';
+            newInput.style.borderRadius = '12px';
+            newInput.style.paddingRight = '12px';
+            newInput.style.paddingLeft = '12px';
+            newInput.style.border = 'solid 1px #B6B9BD37';
+            newInput.appendChild(inputField);
+
+            // Create a trash icon for delete action
+            var trashIcon = document.createElement('i');
+            trashIcon.className = 'icon-trash fs-2 pr-8';
+            trashIcon.style.color = '#FF5200';
+            trashIcon.addEventListener('click', function() {
+                // Remove the input field and trash icon when clicked
+                newInput.remove();
+            });
+            newInput.appendChild(trashIcon);
+
+            // Append the new input to the container
+            document.getElementById(containerId).appendChild(newInput);
+
+            // Clear the main input
+            document.getElementById(mainInputId).value = '';
+        }
+    }
+
+
+    document.getElementById('imageInput').addEventListener('change', function(event) {
+        var files = event.target.files; // Get selected files
+
+        var imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = ''; // Clear previous previews
+        console.log('files.length = ', files.length);
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                var div = document.createElement('div');
+                div.classList.add('item');
+                div.classList.add('p-0');
+                div.classList.add('relative');
+                div.classList.add('border-0');
+                div.style.maxWidth = '100px'; // Limit width for preview
+                div.style.maxHeight = '100px'; // Limit height for preview
+
+                var img = document.createElement('img');
+                img.src = e.target.result; // Set image source to the data URL
+
+                img.style.maxWidth = '100px'; // Limit width for preview
+                img.style.maxHeight = '100px'; // Limit height for preview
+                img.style.borderRadius = '10px'; // Limit height for preview
+
+
+                var deleteBtn = document.createElement('button');
+                deleteBtn.classList.add('block-warning');
+                deleteBtn.classList.add('btn');
+                deleteBtn.classList.add('p-0');
+                deleteBtn.classList.add('px-3');
+                deleteBtn.classList.add('py-3');
+                deleteBtn.classList.add('border-0');
+                deleteBtn.innerHTML = `<svg viewPort="0 0 4 4" style="width: 10px; height: 11px;" version="1.1"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <line x1="1" y1="12" 
+                                                x2="11" y2="1" 
+                                                stroke="white" 
+                                                stroke-width="2"/>
+                                            <line x1="1" y1="1" 
+                                                x2="11" y2="11" 
+                                                stroke="white" 
+                                                stroke-width="2"/>
+                                        </svg>`;
+                deleteBtn.style.backgroundColor = '#FF5200';
+                deleteBtn.style.position = 'absolute';
+
+                deleteBtn.addEventListener('click', function() {
+                    div.remove(); // Remove the parent div when delete button is clicked
+                });
+
+                // Append delete button to div
+                div.appendChild(deleteBtn);
+
+                // Append image to div
+                div.appendChild(img);
+
+                imagePreview.appendChild(div); // Append image to preview container
+            }
+
+            reader.readAsDataURL(file); // Read file as data URL
+        }
+    });
+</script>
 
 </html>

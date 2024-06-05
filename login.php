@@ -7,9 +7,13 @@ if ($session->getSessionVariable(SessionKeys::USER_ID)) {
     header('location:./index.php');
 }
 $response = [];
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $authService = new AuthenticationService();
     $response = $authService->authenticate($_POST['email'], $_POST['password']);
+    if ($response['success'] === true) {
+        $session->setSessionVariable(SessionKeys::USER_ID, $response['data']['userId']);
+        header('index.php');
+    }
 }
 ?>
 
@@ -41,6 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <fieldset class="email">
                                 <div class="body-title mb-10">Email address <span class="tf-color-1">*</span></div>
                                 <input class="flex-grow" type="email" name="email" placeholder="Enter your email address" name="email" tabindex="0" value="" aria-required="true" required="">
+                                <?= isset($response) && isset($response['error']) && isset($response['error']['email'])
+                                    ?'
+                                    <div class="fa-sm mt-2 tf-color-1">
+                                        '.$response["error"]["email"].'
+                                        <span class="tf-color-1">*</span>
+                                    </div>
+                                    '
+                                : ''  ?>
 
                             </fieldset>
                             <fieldset class="password">
@@ -50,6 +62,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <i class="icon-eye view"></i>
                                     <i class="icon-eye-off hide"></i>
                                 </span>
+                                <?= isset($response) && isset($response['error']) && isset($response['error']['password'])
+                                    ?'
+                                    <div class="fa-sm mt-2 tf-color-1">
+                                        '.$response["error"]["password"].'
+                                        <span class="tf-color-1">*</span>
+                                    </div>
+                                    '
+                                : ''  ?>
+
                             </fieldset>
                             <div class="flex justify-between items-center">
                                 <div class="flex gap10">
